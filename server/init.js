@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
-const db = require('./db');
+const db = require('./config/db');
 
 async function run() {
   const sql = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
