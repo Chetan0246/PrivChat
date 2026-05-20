@@ -3,11 +3,11 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const http = require('http');
-const passport = require('./auth');
-const routes = require('./routes');
-const db = require('./db');
-const fs = require('fs');
-const path = require('path');
+const passport = require('./middleware/auth');
+const authRoutes = require('./routes/auth');
+const apiRoutes = require('./routes/api');
+const db = require('./config/db');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,15 +21,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // auth routes
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-  res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000');
-});
+app.use('/auth', authRoutes);
 
-app.post('/auth/logout', (req, res) => { req.logout(() => {}); res.json({ ok: true }); });
-
-// attach our routes
-app.use(routes);
+// API routes
+app.use('/api', apiRoutes);
 
 // create default rooms at startup
 async function ensureDefaultRooms() {
@@ -37,7 +32,7 @@ async function ensureDefaultRooms() {
   for (const n of names) {
     const r = await db.query('SELECT id FROM rooms WHERE name=$1', [n]);
     if (!r.rows.length) {
-      await db.query('INSERT INTO rooms (id, name, is_private) VALUES ($1,$2,$3)', [require('uuid').v4(), n, false]);
+      await db.query('INSERT INTO rooms (id, name, is_private) VALUES ($1,$2,$3)', [uuidv4(), n, false]);
     }
   }
 }
@@ -45,7 +40,7 @@ async function ensureDefaultRooms() {
 ensureDefaultRooms().catch(console.error);
 
 // set up socket.io
-const setupSocket = require('./socket');
+const setupSocket = require('./lib/socket');
 const io = setupSocket(server, sessionMiddleware, app);
 
 const PORT = process.env.PORT || 4000;
