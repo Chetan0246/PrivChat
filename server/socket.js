@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const db = require('./db');
+const db = require('../config/db');
 const { v4: uuidv4 } = require('uuid');
 
 module.exports = function(httpServer, sessionMiddleware, app) {
