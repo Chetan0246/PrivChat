@@ -95,4 +95,4 @@ For Replit deployment, add these as secrets in the Replit Secrets pane instead o
 
 ## Live Demo
 
-Try PrivChat live: https://priv-chat.vercel.app
+Try PrivChat live: https://real-time-chat-app-six-omega.vercel.app
