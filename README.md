@@ -2,6 +2,17 @@
 
 PrivChat is an end-to-end encrypted real-time chat web app with a Google Chat-like user experience. Messages are encrypted in your browser using AES-GCM, and your RSA keypair never leaves your device—the server sees only ciphertext. Sign in with Google and start chatting securely with no intermediaries reading your conversations.
 
+## How to run
+
+```bash
+npm install
+npm run install:all
+npm run init-db
+npm run dev
+```
+
+Complete environment and database setup is described in [Quick Start](#quick-start).
+
 ## Features
 
 - **End-to-End Encryption**: AES-GCM per-message encryption with RSA-OAEP key wrapping per recipient
